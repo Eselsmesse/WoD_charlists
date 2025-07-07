@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{% endblock  %}</title>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="{% static 'main/css/main.css'%}">
+</head>
+<body>
+
+  <aside>
+    <img src="{% static 'main/img/World_of_Darkness_Online_logo.png'%}">
+    <span class="logo"></span>
+    <h3>Навигация</h3>
+    <ul>
+      <a href="{% url 'home' %}"><li>Лист персонажа</li></a>
+      <a href="{% url 'storage' %}"><li>Хранилище персонажей</li></a>
+    </ul>
+    <style>
+      a {
+      text-decoration: none;
+      }
+    </style>
+  </aside>
+  <main> 
+    {% block content %}
+    {% endblock  %}
+  </main> 
+
+</body>
+</html>
