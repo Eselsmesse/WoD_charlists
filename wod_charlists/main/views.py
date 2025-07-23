@@ -6,7 +6,7 @@ def index(request):
             'values': ['some', 'hello', '123'],
             'obj':{
                 'clan': 'gangrel',
-                'sect': 'camarillia',
+                'sect': 'camarilla',
                 'generation': 13,
             }
             }
