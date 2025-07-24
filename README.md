@@ -28,7 +28,21 @@
    python wod_charlists/manage.py runserver
    ```
    
-   После этого проект будет доступен по адресу http://127.0.0.1:8000/
+После этого проект будет доступен по адресу http://127.0.0.1:8000/
+
+### Использование PostgreSQL
+Для работы с PostgreSQL задайте переменные окружения:
+
+```bash
+export DB_ENGINE=django.db.backends.postgresql
+export DB_NAME=<имя_базы>
+export DB_USER=<пользователь>
+export DB_PASSWORD=<пароль>
+export DB_HOST=<хост>       # по умолчанию localhost
+export DB_PORT=<порт>       # по умолчанию 5432
+```
+
+При отсутствии переменных окружения проект использует SQLite.
 
 ---
 
