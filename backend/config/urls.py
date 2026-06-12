@@ -10,6 +10,7 @@ api_v1_patterns = [
     path('auth/', include('accounts.urls')),
     path('', include('rules.urls')),
     path('', include('characters.urls')),
+    path('', include('sharing.urls')),
 ]
 
 urlpatterns = [

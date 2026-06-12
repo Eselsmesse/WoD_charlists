@@ -4,8 +4,9 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .models import Character, CharacterGroup, CharacterTrait, Tag
+from .models import Character, CharacterGroup, Tag
 from .permissions import IsOwner
+from .services import duplicate_character
 from .serializers import (
     CharacterDetailSerializer,
     CharacterGroupSerializer,
@@ -80,27 +81,7 @@ class CharacterViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["post"])
     def copy(self, request, pk=None):
         """Дубликат персонажа себе (вместе с трейтами, меритами и флоу)."""
-        source = self.get_object()
-        clone = Character.objects.get(pk=source.pk)
-        clone.pk = None
-        clone.name = f"{source.name} (копия)"
-        clone.is_public = False
-        clone.save()
-        CharacterTrait.objects.bulk_create(
-            CharacterTrait(
-                character=clone,
-                trait=ct.trait,
-                rating=ct.rating,
-                specialty=ct.specialty,
-                notes=ct.notes,
-            )
-            for ct in source.traits.all()
-        )
-        for relation in (source.merits, source.flaws):
-            for item in relation.all():
-                item.pk = None
-                item.character = clone
-                item.save()
+        clone = duplicate_character(self.get_object(), owner=request.user)
         data = self.get_serializer(self.get_queryset().get(pk=clone.pk)).data
         return Response(data, status=status.HTTP_201_CREATED)
 

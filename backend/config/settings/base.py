@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "accounts",
     "rules",
     "characters",
+    "sharing",
     "rest_framework",
     "corsheaders",
     "django.contrib.admin",
