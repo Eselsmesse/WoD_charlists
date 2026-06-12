@@ -87,3 +87,50 @@ class SeedV20Tests(TestCase):
         self.assertTrue(
             Trait.objects.filter(origin=Trait.Origin.PARSED).count() == Trait.objects.count()
         )
+
+
+class RulesApiTests(TestCase):
+    """Read-only API справочника: без авторизации, данные из seed_v20."""
+
+    @classmethod
+    def setUpTestData(cls):
+        call_command("seed_v20", verbosity=0)
+
+    def test_lines_list_public(self):
+        response = self.client.get("/api/v1/lines/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["results"][0]["code"], "vampire")
+
+    def test_traits_filter_by_category(self):
+        response = self.client.get("/api/v1/lines/vampire/traits/?category=attribute")
+        data = response.json()
+        self.assertEqual(data["count"], 9)
+        self.assertTrue(all(t["category"] == "attribute" for t in data["results"]))
+
+    def test_clans_include_disciplines(self):
+        response = self.client.get("/api/v1/lines/vampire/clans/")
+        clans = {c["code"]: c for c in response.json()["results"]}
+        self.assertEqual(
+            set(clans["ventrue"]["disciplines"]), {"dominate", "fortitude", "presence"}
+        )
+
+    def test_archetypes_list(self):
+        response = self.client.get("/api/v1/lines/vampire/archetypes/")
+        self.assertEqual(response.json()["count"], 41)
+
+    def test_creation_rules_from_data(self):
+        response = self.client.get("/api/v1/lines/vampire/creation-rules/")
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data["rules"]["attribute_priorities"], [7, 5, 3])
+        self.assertEqual(data["rules"]["ability_priorities"], [13, 9, 5])
+        self.assertEqual(data["rules"]["freebie_points"], 15)
+        self.assertEqual(len(data["generations"]), 10)
+
+    def test_unknown_line_404(self):
+        response = self.client.get("/api/v1/lines/mage/traits/")
+        self.assertEqual(response.status_code, 404)
+
+    def test_rules_endpoints_read_only(self):
+        response = self.client.post("/api/v1/lines/", {"code": "mage", "name": "Mage"})
+        self.assertEqual(response.status_code, 405)

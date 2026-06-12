@@ -1,0 +1,91 @@
+from django.db.models import Q
+from rest_framework import status, viewsets
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
+from .models import Character, CharacterTrait
+from .permissions import IsOwner
+from .serializers import (
+    CharacterDetailSerializer,
+    CharacterListSerializer,
+    CharacterTraitsBulkSerializer,
+)
+
+
+class CharacterViewSet(viewsets.ModelViewSet):
+    permission_classes = (IsAuthenticated, IsOwner)
+
+    def get_queryset(self):
+        queryset = Character.objects.filter(owner=self.request.user).select_related(
+            "line", "clan", "nature", "demeanor"
+        )
+        if self.action == "list":
+            queryset = queryset.prefetch_related("tags")
+            params = self.request.query_params
+            line = params.get("line")
+            if line:
+                queryset = queryset.filter(line__code=line)
+            tag = params.get("tag")
+            if tag:
+                queryset = queryset.filter(tags__name=tag)
+            group = params.get("group")
+            if group:
+                queryset = queryset.filter(groups__id=group)
+            search = params.get("search")
+            if search:
+                queryset = queryset.filter(
+                    Q(name__icontains=search)
+                    | Q(concept__icontains=search)
+                    | Q(chronicle__icontains=search)
+                )
+            queryset = queryset.distinct()
+        else:
+            queryset = queryset.prefetch_related("traits__trait", "tags")
+        return queryset
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return CharacterListSerializer
+        return CharacterDetailSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+    @action(detail=True, methods=["put"], url_path="traits")
+    def traits(self, request, pk=None):
+        """Bulk-апсерт точек трейтов: повторный вызов обновляет, не плодит строки."""
+        character = self.get_object()
+        serializer = CharacterTraitsBulkSerializer(
+            data=request.data, context={"character": character}
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(self.get_serializer(self.get_object()).data)
+
+    @action(detail=True, methods=["post"])
+    def copy(self, request, pk=None):
+        """Дубликат персонажа себе (вместе с трейтами, меритами и флоу)."""
+        source = self.get_object()
+        clone = Character.objects.get(pk=source.pk)
+        clone.pk = None
+        clone.name = f"{source.name} (копия)"
+        clone.is_public = False
+        clone.save()
+        CharacterTrait.objects.bulk_create(
+            CharacterTrait(
+                character=clone,
+                trait=ct.trait,
+                rating=ct.rating,
+                specialty=ct.specialty,
+                notes=ct.notes,
+            )
+            for ct in source.traits.all()
+        )
+        for relation in (source.merits, source.flaws):
+            for item in relation.all():
+                item.pk = None
+                item.character = clone
+                item.save()
+        data = self.get_serializer(self.get_queryset().get(pk=clone.pk)).data
+        return Response(data, status=status.HTTP_201_CREATED)

@@ -8,6 +8,8 @@ from . import views
 api_v1_patterns = [
     path('health/', views.health, name='api-health'),
     path('auth/', include('accounts.urls')),
+    path('', include('rules.urls')),
+    path('', include('characters.urls')),
 ]
 
 urlpatterns = [

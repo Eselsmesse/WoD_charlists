@@ -26,7 +26,7 @@
 | [003](SPEC-003-domain-models.md) | 1 | Доменные модели `rules`/`characters` | DONE |
 | [004](SPEC-004-rules-data-pipeline.md) | 1 | Пайплайн данных V20 → фикстуры | REVIEW |
 | [005](SPEC-005-auth-api.md) | 2 | API аутентификации | DONE |
-| [006](SPEC-006-characters-api.md) | 2 | API персонажей (CRUD + трейты) | TODO |
+| [006](SPEC-006-characters-api.md) | 2 | API персонажей (CRUD + трейты) | REVIEW |
 | [007](SPEC-007-tags-groups.md) | 2 | Теги и группы | TODO |
 | [008](SPEC-008-sharing.md) | 2 | Шеринг по ссылке | TODO |
 
