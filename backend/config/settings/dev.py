@@ -14,3 +14,9 @@ SECRET_KEY = os.environ.get(
 )
 
 ALLOWED_HOSTS = env_list("DJANGO_ALLOWED_HOSTS", default="localhost,127.0.0.1")
+
+# Dev-origin SPA (Vite); переопределяется переменной CORS_ALLOWED_ORIGINS.
+CORS_ALLOWED_ORIGINS = env_list(
+    "CORS_ALLOWED_ORIGINS",
+    default="http://localhost:5173,http://127.0.0.1:5173",
+)
