@@ -43,9 +43,10 @@ Django 5.2 проект в `backend/` (перенесён из `wod_charlists/` 
   GenerationStat, Merit, Flaw) + `characters` (Character, CharacterTrait, Tag,
   CharacterGroup); `storage` упразднён. `main` (демо-шаблоны) — временное, уйдёт
   при переезде на SPA.
+- Auth API готов (SPEC-005): /api/v1/auth/{register,token,token/refresh,me}/.
 - Пайплайн данных V20 (SPEC-004) — в ветке `spec-004-rules-data`, статус
   **REVIEW**: ждёт ручной валидации владельцем (чек-лист в спеке), потом merge.
-- SQLite. **Ещё не сделано**: реальные эндпоинты auth/персонажей (фаза 2).
+- SQLite. **Ещё не сделано**: API персонажей/тегов/шеринга (SPEC-006..008).
 
 ## Git-процесс
 
