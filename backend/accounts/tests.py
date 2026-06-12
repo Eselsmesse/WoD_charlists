@@ -39,3 +39,80 @@ class JwtTests(APITestCase):
         refresh = RefreshToken.for_user(user)
         self.assertTrue(str(refresh))
         self.assertTrue(str(refresh.access_token))
+
+
+class RegisterApiTests(APITestCase):
+    url = "/api/v1/auth/register/"
+
+    def test_register_success(self):
+        response = self.client.post(
+            self.url, {"email": "new@example.com", "password": "StrongPass123"}
+        )
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.json()["email"], "new@example.com")
+        self.assertNotIn("password", response.json())
+        self.assertTrue(User.objects.filter(email="new@example.com").exists())
+
+    def test_register_duplicate_email(self):
+        User.objects.create_user(email="taken@example.com", password="StrongPass123")
+        response = self.client.post(
+            self.url, {"email": "taken@example.com", "password": "StrongPass123"}
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("email", response.json())
+
+    def test_register_weak_password_rejected(self):
+        response = self.client.post(self.url, {"email": "weak@example.com", "password": "123"})
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("password", response.json())
+        self.assertFalse(User.objects.filter(email="weak@example.com").exists())
+
+
+class TokenApiTests(APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user(email="login@example.com", password="StrongPass123")
+
+    def test_token_obtain_pair(self):
+        response = self.client.post(
+            "/api/v1/auth/token/", {"email": "login@example.com", "password": "StrongPass123"}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("access", response.json())
+        self.assertIn("refresh", response.json())
+
+    def test_token_wrong_password(self):
+        response = self.client.post(
+            "/api/v1/auth/token/", {"email": "login@example.com", "password": "WrongPass999"}
+        )
+        self.assertEqual(response.status_code, 401)
+
+    def test_token_refresh(self):
+        pair = self.client.post(
+            "/api/v1/auth/token/", {"email": "login@example.com", "password": "StrongPass123"}
+        ).json()
+        response = self.client.post("/api/v1/auth/token/refresh/", {"refresh": pair["refresh"]})
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("access", response.json())
+
+
+class MeApiTests(APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user(
+            email="me@example.com", password="StrongPass123", first_name="Имя"
+        )
+
+    def test_me_without_token(self):
+        response = self.client.get("/api/v1/auth/me/")
+        self.assertEqual(response.status_code, 401)
+
+    def test_me_with_token(self):
+        access = RefreshToken.for_user(self.user).access_token
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {access}")
+        response = self.client.get("/api/v1/auth/me/")
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data["email"], "me@example.com")
+        self.assertEqual(data["first_name"], "Имя")
+        self.assertNotIn("password", data)
