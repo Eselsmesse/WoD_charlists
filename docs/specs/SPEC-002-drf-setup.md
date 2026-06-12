@@ -1,6 +1,6 @@
 # SPEC-002: Каркас DRF + JWT + модель пользователя
 
-> Статус: TODO · Фаза: 0 · Зависит от: SPEC-001
+> Статус: DONE · Фаза: 0 · Зависит от: SPEC-001
 
 ## Цель
 
@@ -31,11 +31,11 @@
 
 ## Критерии приёмки
 
-- [ ] `GET /api/v1/health/` возвращает 200 `{"status": "ok"}`.
-- [ ] `AUTH_USER_MODEL` указывает на кастомную модель; миграции применяются с нуля.
-- [ ] DRF browsable API доступен в dev; JWT-классы подключены глобально.
-- [ ] CORS разрешает dev-origin фронта из настроек env.
-- [ ] `python manage.py check` и существующие тесты зелёные.
+- [x] `GET /api/v1/health/` возвращает 200 `{"status": "ok"}`.
+- [x] `AUTH_USER_MODEL` указывает на кастомную модель; миграции применяются с нуля.
+- [x] DRF browsable API доступен в dev; JWT-классы подключены глобально.
+- [x] CORS разрешает dev-origin фронта из настроек env.
+- [x] `python manage.py check` и существующие тесты зелёные.
 
 ## Заметки по реализации
 
@@ -58,3 +58,17 @@
 ## Definition of Done
 
 Каркас API работает, пользователь кастомный, JWT и CORS настроены, тесты зелёные.
+
+## Итоги реализации (2026-06-12)
+
+- Приложение `accounts`: `User(AbstractUser)` без `username`, вход по `email`
+  (`USERNAME_FIELD = "email"`), свой `UserManager`, админка на базе `UserAdmin`;
+  миграция `accounts.0001_initial`.
+- `REST_FRAMEWORK`: JWT-аутентификация по умолчанию, права `IsAuthenticated`,
+  пагинация `PageNumberPagination` (20). `SIMPLE_JWT`: access 15 мин / refresh
+  7 дней, настраивается env (`JWT_ACCESS_LIFETIME_MINUTES`, `JWT_REFRESH_LIFETIME_DAYS`).
+- CORS: `CORS_ALLOWED_ORIGINS` из env; dev-дефолт `localhost:5173` (Vite).
+- `GET /api/v1/health/` (`AllowAny`) → `{"status": "ok"}`; вью в `config/views.py`.
+- Тесты: 6 шт. (health, создание user/superuser, обязательность email, JWT-пара).
+- Устаревший локальный `db.sqlite3` старого скелета удалён (несовместим с новым
+  `AUTH_USER_MODEL`); миграции проверены с нуля.
