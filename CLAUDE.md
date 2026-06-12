@@ -43,8 +43,9 @@ Django 5.2 проект в `backend/` (перенесён из `wod_charlists/` 
   GenerationStat, Merit, Flaw) + `characters` (Character, CharacterTrait, Tag,
   CharacterGroup); `storage` упразднён. `main` (демо-шаблоны) — временное, уйдёт
   при переезде на SPA.
-- SQLite. **Ещё не сделано**: фикстуры каталога V20 (SPEC-004), реальные
-  эндпоинты auth/персонажей (фаза 2).
+- Пайплайн данных V20 (SPEC-004) — в ветке `spec-004-rules-data`, статус
+  **REVIEW**: ждёт ручной валидации владельцем (чек-лист в спеке), потом merge.
+- SQLite. **Ещё не сделано**: реальные эндпоинты auth/персонажей (фаза 2).
 
 ## Git-процесс
 

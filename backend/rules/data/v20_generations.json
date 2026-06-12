@@ -1,0 +1,15 @@
+{
+  "source": "V20 Core Rulebook (таблица поколений — механический факт)",
+  "generations": [
+    {"generation": 13, "max_blood_pool": 10, "blood_per_turn": 1, "max_trait_rating": 5},
+    {"generation": 12, "max_blood_pool": 11, "blood_per_turn": 1, "max_trait_rating": 5},
+    {"generation": 11, "max_blood_pool": 12, "blood_per_turn": 1, "max_trait_rating": 5},
+    {"generation": 10, "max_blood_pool": 13, "blood_per_turn": 1, "max_trait_rating": 5},
+    {"generation": 9, "max_blood_pool": 14, "blood_per_turn": 2, "max_trait_rating": 5},
+    {"generation": 8, "max_blood_pool": 15, "blood_per_turn": 3, "max_trait_rating": 5},
+    {"generation": 7, "max_blood_pool": 20, "blood_per_turn": 4, "max_trait_rating": 6},
+    {"generation": 6, "max_blood_pool": 30, "blood_per_turn": 6, "max_trait_rating": 7},
+    {"generation": 5, "max_blood_pool": 40, "blood_per_turn": 8, "max_trait_rating": 8},
+    {"generation": 4, "max_blood_pool": 50, "blood_per_turn": 10, "max_trait_rating": 9}
+  ]
+}

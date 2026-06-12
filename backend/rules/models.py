@@ -7,6 +7,26 @@
 from django.db import models
 
 
+class SourcedModel(models.Model):
+    """Происхождение записи справочника: спарсено или проверено владельцем.
+
+    Все записи каталога создаются пайплайном как «спарсено» (SPEC-004);
+    владелец валидирует данные вручную и переводит в «проверено».
+    """
+
+    class Origin(models.TextChoices):
+        PARSED = "parsed", "Спарсено"
+        VERIFIED = "verified", "Проверено"
+
+    origin = models.CharField(
+        "Происхождение", max_length=10, choices=Origin.choices, default=Origin.PARSED
+    )
+    source = models.CharField("Источник", max_length=200, blank=True)
+
+    class Meta:
+        abstract = True
+
+
 class GameLine(models.Model):
     """Линейка WoD: Vampire, Werewolf и т.д."""
 
@@ -24,7 +44,7 @@ class GameLine(models.Model):
         return f"{self.name} ({self.edition})"
 
 
-class Trait(models.Model):
+class Trait(SourcedModel):
     """Любой точечный трейт: атрибут, способность, дисциплина, бэкграунд, добродетель."""
 
     class Category(models.TextChoices):
@@ -63,7 +83,7 @@ class Trait(models.Model):
         return f"{self.name} [{self.get_category_display()}]"
 
 
-class Clan(models.Model):
+class Clan(SourcedModel):
     line = models.ForeignKey(
         GameLine, on_delete=models.CASCADE, related_name="clans", verbose_name="Линейка"
     )
@@ -91,7 +111,7 @@ class Clan(models.Model):
         return self.name
 
 
-class Archetype(models.Model):
+class Archetype(SourcedModel):
     """Архетип личности: Nature / Demeanor."""
 
     line = models.ForeignKey(
@@ -111,7 +131,7 @@ class Archetype(models.Model):
         return self.name
 
 
-class GenerationStat(models.Model):
+class GenerationStat(SourcedModel):
     """Параметры поколения вампира (таблица §5.3 домена)."""
 
     line = models.ForeignKey(
@@ -132,7 +152,7 @@ class GenerationStat(models.Model):
         return f"Поколение {self.generation}"
 
 
-class MeritFlawBase(models.Model):
+class MeritFlawBase(SourcedModel):
     """Общее для меритов и флоу: категория, стоимость в очках, описание."""
 
     class Category(models.TextChoices):
@@ -170,3 +190,27 @@ class Flaw(MeritFlawBase):
     class Meta(MeritFlawBase.Meta):
         verbose_name = "Флоу"
         verbose_name_plural = "Флоу"
+
+
+class CreationRule(SourcedModel):
+    """Числовое правило создания персонажа как данные (не логика в коде).
+
+    Формат key/value: например key="attribute_priorities", value=[7, 5, 3];
+    key="freebie_costs", value={"attribute": 5, "ability": 2, ...}.
+    """
+
+    line = models.ForeignKey(
+        GameLine, on_delete=models.CASCADE, related_name="creation_rules", verbose_name="Линейка"
+    )
+    key = models.SlugField("Ключ")  # "attribute_priorities", "freebie_points", ...
+    value = models.JSONField("Значение")
+    description = models.CharField("Описание", max_length=200, blank=True)
+
+    class Meta:
+        verbose_name = "Правило создания"
+        verbose_name_plural = "Правила создания"
+        unique_together = [("line", "key")]
+        ordering = ["line", "key"]
+
+    def __str__(self):
+        return f"{self.key} = {self.value}"

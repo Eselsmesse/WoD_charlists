@@ -1,0 +1,96 @@
+{
+  "source": "V20 Core Rulebook (состав клановых дисциплин — механический факт; слабости пересказаны своими словами)",
+  "clans": [
+    {
+      "code": "brujah",
+      "name": "Бруха",
+      "default_sect": "Camarilla",
+      "disciplines": ["celerity", "potence", "presence"],
+      "weakness_summary": "Вспыльчивы: труднее удержаться от безумия ярости (штраф на сопротивление френзи)."
+    },
+    {
+      "code": "gangrel",
+      "name": "Гангрел",
+      "default_sect": "Camarilla",
+      "disciplines": ["animalism", "fortitude", "protean"],
+      "weakness_summary": "После каждого впадения в френзи приобретают заметную звериную черту."
+    },
+    {
+      "code": "malkavian",
+      "name": "Малкавиан",
+      "default_sect": "Camarilla",
+      "disciplines": ["auspex", "dementation", "obfuscate"],
+      "weakness_summary": "Каждый носит неизлечимое психическое расстройство (derangement)."
+    },
+    {
+      "code": "nosferatu",
+      "name": "Носферату",
+      "default_sect": "Camarilla",
+      "disciplines": ["animalism", "obfuscate", "potence"],
+      "weakness_summary": "Чудовищно уродливы: Внешность всегда 0, появляться на людях открыто нельзя."
+    },
+    {
+      "code": "toreador",
+      "name": "Тореадор",
+      "default_sect": "Camarilla",
+      "disciplines": ["auspex", "celerity", "presence"],
+      "weakness_summary": "Зачарованность прекрасным: могут впасть в оцепенение при виде красоты."
+    },
+    {
+      "code": "tremere",
+      "name": "Тремер",
+      "default_sect": "Camarilla",
+      "disciplines": ["auspex", "dominate", "thaumaturgy"],
+      "weakness_summary": "Повышенно уязвимы к узам крови: достаточно двух глотков вместо трёх."
+    },
+    {
+      "code": "ventrue",
+      "name": "Вентру",
+      "default_sect": "Camarilla",
+      "disciplines": ["dominate", "fortitude", "presence"],
+      "weakness_summary": "Разборчивы в крови: могут питаться только от определённого типа смертных."
+    },
+    {
+      "code": "lasombra",
+      "name": "Ласомбра",
+      "default_sect": "Sabbat",
+      "disciplines": ["dominate", "obtenebration", "potence"],
+      "weakness_summary": "Не отражаются в зеркалах и на записях; солнечный свет ранит их сильнее."
+    },
+    {
+      "code": "tzimisce",
+      "name": "Цимисхи",
+      "default_sect": "Sabbat",
+      "disciplines": ["animalism", "auspex", "vicissitude"],
+      "weakness_summary": "Привязаны к родной земле: должны отдыхать рядом с ней, иначе слабеют."
+    },
+    {
+      "code": "assamite",
+      "name": "Ассамит",
+      "default_sect": "Independent",
+      "disciplines": ["celerity", "obfuscate", "quietus"],
+      "weakness_summary": "Зависимы от крови сородичей: попробовав, рискуют пристраститься."
+    },
+    {
+      "code": "followers-of-set",
+      "name": "Последователи Сета",
+      "default_sect": "Independent",
+      "disciplines": ["obfuscate", "presence", "serpentis"],
+      "weakness_summary": "Болезненно чувствительны к свету: яркое освещение даёт штрафы, солнце ранит сильнее."
+    },
+    {
+      "code": "giovanni",
+      "name": "Джованни",
+      "default_sect": "Independent",
+      "disciplines": ["dominate", "necromancy", "potence"],
+      "weakness_summary": "Их укус не дарит экстаза, а причиняет жертве мучительную боль и больший вред."
+    },
+    {
+      "code": "ravnos",
+      "name": "Равнос",
+      "default_sect": "Independent",
+      "disciplines": ["animalism", "chimerstry", "fortitude"],
+      "weakness_summary": "Одержимы избранным пороком: должны сопротивляться искушению ему предаться."
+    }
+  ]
+}

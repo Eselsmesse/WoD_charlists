@@ -79,7 +79,19 @@ class GenerationStat(models.Model):      # таблица §5.3 домена
 class Merit(models.Model): ...           # category, name, cost, summary
 class Flaw(models.Model): ...            # category, name, bonus, summary
 # (Опционально, не для MVP) DisciplinePower: discipline FK, level 1..5, name, summary
+
+class CreationRule(models.Model):        # числа создания как данные (SPEC-004)
+    """key/value: attribute_priorities=[7,5,3], freebie_costs={...}, health_levels=[...]"""
+    line = models.ForeignKey(GameLine, on_delete=models.CASCADE)
+    key = models.SlugField()              # unique вместе с line
+    value = models.JSONField()
+    description = models.CharField(max_length=200, blank=True)
 ```
+
+Все модели справочника (кроме `GameLine`) наследуют абстрактный `SourcedModel`
+(SPEC-004): `origin` (`parsed`/`verified` — спарсено или проверено владельцем)
+и `source` (текстовая пометка источника). Пайплайн пишет `parsed`; владелец
+после ручной валидации переводит в `verified`, повторный `seed_v20` это не сбрасывает.
 
 ## Приложение `characters` (контент пользователя)
 

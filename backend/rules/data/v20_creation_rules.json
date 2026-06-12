@@ -1,0 +1,81 @@
+{
+  "source": "V20 Core Rulebook (числа создания персонажа — механический факт)",
+  "rules": [
+    {
+      "key": "attribute_priorities",
+      "value": [7, 5, 3],
+      "description": "Доп. точки атрибутов по приоритету категорий (поверх стартовой 1)"
+    },
+    {
+      "key": "ability_priorities",
+      "value": [13, 9, 5],
+      "description": "Точки способностей по приоритету групп"
+    },
+    {
+      "key": "ability_creation_cap",
+      "value": 3,
+      "description": "Максимум способности при создании без freebie"
+    },
+    {
+      "key": "discipline_dots",
+      "value": 3,
+      "description": "Точки дисциплин при создании (обычно клановые)"
+    },
+    {
+      "key": "background_dots",
+      "value": 5,
+      "description": "Точки бэкграундов при создании"
+    },
+    {
+      "key": "virtue_dots",
+      "value": 7,
+      "description": "Доп. точки добродетелей (поверх стартовой 1 в каждой)"
+    },
+    {
+      "key": "freebie_points",
+      "value": 15,
+      "description": "Свободные очки тонкой настройки"
+    },
+    {
+      "key": "freebie_costs",
+      "value": {
+        "attribute": 5,
+        "ability": 2,
+        "discipline": 7,
+        "background": 1,
+        "virtue": 2,
+        "humanity": 1,
+        "willpower": 1
+      },
+      "description": "Стоимость точки за freebie-очки"
+    },
+    {
+      "key": "flaws_max_points",
+      "value": 7,
+      "description": "Максимум очков от флоу при создании"
+    },
+    {
+      "key": "humanity_base",
+      "value": "conscience + self-control",
+      "description": "Стартовая Человечность — сумма добродетелей"
+    },
+    {
+      "key": "willpower_base",
+      "value": "courage",
+      "description": "Стартовая Сила воли равна Храбрости"
+    },
+    {
+      "key": "health_levels",
+      "value": [
+        {"code": "bruised", "name": "Задет", "penalty": 0},
+        {"code": "hurt", "name": "Поврежден", "penalty": -1},
+        {"code": "injured", "name": "Ранен", "penalty": -1},
+        {"code": "wounded", "name": "Тяжело ранен", "penalty": -2},
+        {"code": "mauled", "name": "Истерзан", "penalty": -2},
+        {"code": "crippled", "name": "Искалечен", "penalty": -5},
+        {"code": "incapacitated", "name": "Недееспособен", "penalty": null}
+      ],
+      "description": "Шкала здоровья со штрафами"
+    }
+  ]
+}
