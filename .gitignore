@@ -1,2 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Виртуальные окружения
 .venv/
+venv/
+
+# Django
+*.sqlite3
+staticfiles/
+media/
+*.log
+
+# Секреты и локальная конфигурация
+.env
+
+# Инструменты
 cursor/
+.idea/

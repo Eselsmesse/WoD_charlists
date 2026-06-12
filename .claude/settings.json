@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__opensearch-dev__SearchIndexTool",
+      "mcp__opensearch-dev__CountTool",
+      "mcp__opensearch-prod__CountTool",
+      "mcp__opensearch-prod__SearchIndexTool"
+    ]
+  },
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python -X utf8 .claude/hooks/serena_reminder.py"
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "superpowers@claude-plugins-official": true
+  }
+}
