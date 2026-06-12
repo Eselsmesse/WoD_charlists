@@ -37,12 +37,13 @@ Django 5.2 проект в `backend/` (перенесён из `wod_charlists/` 
 
 - настройки разнесены: `backend/config/settings/{base,dev,prod}.py`, env через
   `.env` (см. `.env.example`); зависимости — `backend/requirements/{base,dev,prod}.txt`.
-- приложения `main` (демо-презентация, шаблоны) и `storage` (стартовые модели
-  `SystemDefinition`, `Character`) — **временные**, будут расщеплены на
-  `rules` + `characters` и убраны (см. SPEC-003).
 - DRF + JWT (simplejwt) + CORS настроены (SPEC-002): кастомный `accounts.User`
   (email-логин), `/api/v1/health/`. Фаза 0 закрыта.
-- SQLite. **Ещё не сделано**: доменные модели/фикстуры (фаза 1), реальные
+- Доменные модели готовы (SPEC-003): `rules` (GameLine, Trait, Clan, Archetype,
+  GenerationStat, Merit, Flaw) + `characters` (Character, CharacterTrait, Tag,
+  CharacterGroup); `storage` упразднён. `main` (демо-шаблоны) — временное, уйдёт
+  при переезде на SPA.
+- SQLite. **Ещё не сделано**: фикстуры каталога V20 (SPEC-004), реальные
   эндпоинты auth/персонажей (фаза 2).
 
 ## Git-процесс

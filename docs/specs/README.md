@@ -23,7 +23,7 @@
 | [000](SPEC-000-template.md) | — | Шаблон спеки | — |
 | [001](SPEC-001-project-hygiene.md) | 0 | Гигиена проекта и настройки | DONE |
 | [002](SPEC-002-drf-setup.md) | 0 | Каркас DRF + JWT + пользователь | DONE |
-| [003](SPEC-003-domain-models.md) | 1 | Доменные модели `rules`/`characters` | TODO |
+| [003](SPEC-003-domain-models.md) | 1 | Доменные модели `rules`/`characters` | DONE |
 | [004](SPEC-004-rules-data-pipeline.md) | 1 | Пайплайн данных V20 → фикстуры | TODO |
 | [005](SPEC-005-auth-api.md) | 2 | API аутентификации | TODO |
 | [006](SPEC-006-characters-api.md) | 2 | API персонажей (CRUD + трейты) | TODO |
