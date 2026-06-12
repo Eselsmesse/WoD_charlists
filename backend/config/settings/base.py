@@ -45,8 +45,9 @@ ALLOWED_HOSTS = env_list("DJANGO_ALLOWED_HOSTS")
 
 INSTALLED_APPS = [
     "main",
-    "storage",
     "accounts",
+    "rules",
+    "characters",
     "rest_framework",
     "corsheaders",
     "django.contrib.admin",

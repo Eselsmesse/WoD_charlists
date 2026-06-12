@@ -1,6 +1,6 @@
 # SPEC-003: Доменные модели `rules` и `characters`
 
-> Статус: TODO · Фаза: 1 · Зависит от: SPEC-002
+> Статус: DONE · Фаза: 1 · Зависит от: SPEC-002
 
 ## Цель
 
@@ -36,12 +36,12 @@
 
 ## Критерии приёмки
 
-- [ ] `makemigrations` + `migrate` проходят с нуля без ошибок.
-- [ ] В админке можно завести `GameLine=vampire`, пару `Trait`, `Clan`, и
+- [x] `makemigrations` + `migrate` проходят с нуля без ошибок.
+- [x] В админке можно завести `GameLine=vampire`, пару `Trait`, `Clan`, и
       создать `Character` с несколькими `CharacterTrait` (inline).
-- [ ] `unique_together` работает: нельзя добавить один трейт персонажу дважды.
-- [ ] `Character.owner` обязателен; теги уникальны в рамках владельца.
-- [ ] `storage` удалён, проект поднимается, `check` зелёный.
+- [x] `unique_together` работает: нельзя добавить один трейт персонажу дважды.
+- [x] `Character.owner` обязателен; теги уникальны в рамках владельца.
+- [x] `storage` удалён, проект поднимается, `check` зелёный.
 
 ## Заметки по реализации
 
@@ -69,3 +69,20 @@
 
 Схема из [03](../03-data-model.md) в коде, миграции с нуля, админка пригодна для
 ручной проверки, `storage` убран.
+
+## Итоги реализации (2026-06-12)
+
+- `rules`: `GameLine`, `Trait` (7 категорий из доки), `Clan` (M2M disciplines с
+  `limit_choices_to`), `Archetype`, `GenerationStat`, `Merit`/`Flaw` (общая
+  абстрактная база `MeritFlawBase`: line/category/code/name/summary; у Merit —
+  `cost`, у Flaw — `bonus`). Уникальность: `(line, category, code)` для Trait,
+  `(line, code)` для остальных.
+- `characters`: `Character`, `CharacterTrait` (unique `(character, trait)`),
+  `CharacterMerit` + `CharacterFlaw` (заведены, наполнение опционально), `Tag`
+  (unique `(owner, name)`), `CharacterGroup`. `on_delete` как в спеке:
+  line — PROTECT, clan/nature/demeanor — SET_NULL, trait у CharacterTrait — PROTECT.
+- Админка: `CharacterAdmin` с inline трейтов/меритов/флоу, autocomplete,
+  фильтры по line/clan; справочник `rules` — с фильтрами line/category.
+- `storage` удалён (INSTALLED_APPS, urls, ссылка в `main/layout.html`).
+- Тесты: 9 новых (создание с трейтами, unique_together, PROTECT/SET_NULL/CASCADE,
+  owner обязателен, теги per-owner) — всего 15, все зелёные; миграции проверены с нуля.
