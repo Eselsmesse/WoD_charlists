@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from rules.models import Archetype, Clan, GameLine, Trait
 
-from .models import Character, CharacterTrait, Tag
+from .models import Character, CharacterGroup, CharacterTrait, Tag
 
 
 class TagBriefSerializer(serializers.ModelSerializer):
@@ -104,6 +104,64 @@ class CharacterDetailSerializer(serializers.ModelSerializer):
                     {field: f"«{value.code}» не принадлежит линейке {line.code}."}
                 )
         return attrs
+
+
+class OwnedCharactersField(serializers.PrimaryKeyRelatedField):
+    """M2M-поле, ограниченное персонажами текущего пользователя."""
+
+    def get_queryset(self):
+        return Character.objects.filter(owner=self.context["request"].user)
+
+
+class TagSerializer(serializers.ModelSerializer):
+    characters = OwnedCharactersField(many=True, required=False)
+
+    class Meta:
+        model = Tag
+        fields = ("id", "name", "color", "characters")
+
+    def validate_name(self, value):
+        owner = self.context["request"].user
+        existing = Tag.objects.filter(owner=owner, name=value)
+        if self.instance:
+            existing = existing.exclude(pk=self.instance.pk)
+        if existing.exists():
+            raise serializers.ValidationError("Тег с таким именем уже есть.")
+        return value
+
+
+class CharacterGroupSerializer(serializers.ModelSerializer):
+    members = OwnedCharactersField(many=True, required=False)
+
+    class Meta:
+        model = CharacterGroup
+        fields = ("id", "name", "members")
+
+
+class CharacterTagsSerializer(serializers.Serializer):
+    """Присвоение/снятие тегов персонажа: списки id собственных тегов."""
+
+    add = serializers.ListField(child=serializers.IntegerField(), required=False, default=list)
+    remove = serializers.ListField(child=serializers.IntegerField(), required=False, default=list)
+
+    def validate(self, attrs):
+        owner = self.context["request"].user
+        ids = set(attrs["add"]) | set(attrs["remove"])
+        tags = {tag.pk: tag for tag in Tag.objects.filter(owner=owner, pk__in=ids)}
+        unknown = sorted(ids - set(tags))
+        if unknown:
+            raise serializers.ValidationError({"tags": f"Неизвестные id тегов: {unknown}"})
+        attrs["add_tags"] = [tags[pk] for pk in attrs["add"]]
+        attrs["remove_tags"] = [tags[pk] for pk in attrs["remove"]]
+        return attrs
+
+    def save(self):
+        character = self.context["character"]
+        for tag in self.validated_data["add_tags"]:
+            tag.characters.add(character)
+        for tag in self.validated_data["remove_tags"]:
+            tag.characters.remove(character)
+        return character
 
 
 class TraitUpsertItemSerializer(serializers.Serializer):

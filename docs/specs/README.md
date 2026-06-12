@@ -27,7 +27,7 @@
 | [004](SPEC-004-rules-data-pipeline.md) | 1 | Пайплайн данных V20 → фикстуры | REVIEW |
 | [005](SPEC-005-auth-api.md) | 2 | API аутентификации | DONE |
 | [006](SPEC-006-characters-api.md) | 2 | API персонажей (CRUD + трейты) | REVIEW |
-| [007](SPEC-007-tags-groups.md) | 2 | Теги и группы | TODO |
+| [007](SPEC-007-tags-groups.md) | 2 | Теги и группы | REVIEW |
 | [008](SPEC-008-sharing.md) | 2 | Шеринг по ссылке | TODO |
 
 Спеки фаз 3–5 (SPEC-009+) перечислены в [дорожной карте](../06-roadmap.md) и

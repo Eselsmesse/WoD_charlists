@@ -4,12 +4,15 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .models import Character, CharacterTrait
+from .models import Character, CharacterGroup, CharacterTrait, Tag
 from .permissions import IsOwner
 from .serializers import (
     CharacterDetailSerializer,
+    CharacterGroupSerializer,
     CharacterListSerializer,
+    CharacterTagsSerializer,
     CharacterTraitsBulkSerializer,
+    TagSerializer,
 )
 
 
@@ -63,6 +66,17 @@ class CharacterViewSet(viewsets.ModelViewSet):
         serializer.save()
         return Response(self.get_serializer(self.get_object()).data)
 
+    @action(detail=True, methods=["post"], url_path="tags")
+    def tags(self, request, pk=None):
+        """Присвоить/снять теги: {"add": [id, ...], "remove": [id, ...]}."""
+        character = self.get_object()
+        serializer = CharacterTagsSerializer(
+            data=request.data, context={"request": request, "character": character}
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(self.get_serializer(self.get_object()).data)
+
     @action(detail=True, methods=["post"])
     def copy(self, request, pk=None):
         """Дубликат персонажа себе (вместе с трейтами, меритами и флоу)."""
@@ -89,3 +103,25 @@ class CharacterViewSet(viewsets.ModelViewSet):
                 item.save()
         data = self.get_serializer(self.get_queryset().get(pk=clone.pk)).data
         return Response(data, status=status.HTTP_201_CREATED)
+
+
+class OwnedModelViewSet(viewsets.ModelViewSet):
+    """CRUD только по объектам владельца: чужие id дают 404."""
+
+    permission_classes = (IsAuthenticated, IsOwner)
+
+    def get_queryset(self):
+        return self.queryset.filter(owner=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
+class TagViewSet(OwnedModelViewSet):
+    queryset = Tag.objects.prefetch_related("characters")
+    serializer_class = TagSerializer
+
+
+class CharacterGroupViewSet(OwnedModelViewSet):
+    queryset = CharacterGroup.objects.prefetch_related("members")
+    serializer_class = CharacterGroupSerializer
